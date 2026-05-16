@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://c2mwvfqpivl5"]
+
+[ext_resource type="Script" uid="uid://daxvhrr205to" path="res://scripts/xr.gd" id="1_3dryh"]
+[ext_resource type="Script" uid="uid://dgs4o38nemcie" path="res://scripts/map_loader.gd" id="1_lbhrr"]
+[ext_resource type="PackedScene" uid="uid://dvngtp3eloa3v" path="res://scenes/player.tscn" id="1_qxrlw"]
+[ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="1_wrm1d"]
+[ext_resource type="Texture2D" uid="uid://cg5wo1opnv0dw" path="res://textures/bg_base.png" id="2_iywne"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_p57ef"]
+panorama = ExtResource("2_iywne")
+
+[sub_resource type="Sky" id="Sky_qxrlw"]
+sky_material = SubResource("PanoramaSkyMaterial_p57ef")
+
+[sub_resource type="Environment" id="Environment_wrm1d"]
+background_mode = 2
+sky = SubResource("Sky_qxrlw")
+sky_rotation = Vector3(0, 3.1415927, 0)
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ebmjs"]
+albedo_color = Color(0.0627451, 0.0627451, 0.0627451, 1)
+metallic = 0.3
+roughness = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_qxrlw"]
+material = SubResource("StandardMaterial3D_ebmjs")
+size = Vector3(2, 0.01, 2)
+
+[node name="Game" type="Node3D" unique_id=635559875]
+script = ExtResource("1_lbhrr")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=363520053]
+environment = SubResource("Environment_wrm1d")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1313078547]
+transform = Transform3D(0.98480785, -0.15038377, 0.086824104, 0.08682412, 0.85944706, 0.5037982, -0.15038377, -0.48860592, 0.859447, 0, 0, 0)
+
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=934455388]
+
+[node name="StartXR" type="Node" parent="." unique_id=1035334317]
+script = ExtResource("1_3dryh")
+
+[node name="XRSimulator" parent="." unique_id=360544672 instance=ExtResource("1_wrm1d")]
+
+[node name="Player" parent="." unique_id=483345625 instance=ExtResource("1_qxrlw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=1483067180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.005, 1)
+mesh = SubResource("BoxMesh_qxrlw")

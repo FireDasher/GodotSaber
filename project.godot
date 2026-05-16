@@ -1,0 +1,35 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="GodotSaber"
+run/main_scene="uid://c2mwvfqpivl5"
+config/features=PackedStringArray("4.6", "Forward Plus")
+config/icon="res://icon.svg"
+
+[display]
+
+window/size/mode=2
+
+[rendering]
+
+anti_aliasing/quality/screen_space_aa=1
+
+[xr]
+
+openxr/enabled=true
+openxr/target_api_version="1.1.53"
+openxr/startup_alert=false
+shaders/enabled=true

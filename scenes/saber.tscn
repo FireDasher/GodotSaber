@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://bj4iuyxjr3mep"]
+
+[ext_resource type="Script" uid="uid://drvnckoj7rw1r" path="res://scripts/saber.gd" id="1_4ji7x"]
+[ext_resource type="Shader" uid="uid://ce7oqp0sd77se" path="res://shaders/saber.gdshader" id="2_u626u"]
+[ext_resource type="Shader" uid="uid://1tuj3vb73pnx" path="res://shaders/handle.gdshader" id="3_vjnfa"]
+[ext_resource type="AudioStream" uid="uid://bqnfsjv25q1qi" path="res://sounds/HitLong1.wav" id="4_k0lrg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cvnsp"]
+render_priority = 0
+shader = ExtResource("2_u626u")
+shader_parameter/color = Color(1, 0.1882353, 0.1882353, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6t5aa"]
+top_radius = 0.015
+bottom_radius = 0.015
+height = 1.2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k0lrg"]
+render_priority = 0
+shader = ExtResource("3_vjnfa")
+shader_parameter/color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fkybt"]
+resource_local_to_scene = true
+top_radius = 0.015
+bottom_radius = 0.015
+height = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v0iea"]
+albedo_color = Color(0, 0, 0, 1)
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_x3wgy"]
+material = SubResource("StandardMaterial3D_v0iea")
+top_radius = 0.016
+bottom_radius = 0.016
+height = 0.01
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_v0iea"]
+height = 1.2
+radius = 0.015
+
+[node name="Saber" type="Area3D" unique_id=1210729579]
+monitorable = false
+script = ExtResource("1_4ji7x")
+
+[node name="Beam" type="MeshInstance3D" parent="." unique_id=1957680352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+material_override = SubResource("ShaderMaterial_cvnsp")
+mesh = SubResource("CylinderMesh_6t5aa")
+skeleton = NodePath("../..")
+
+[node name="Handle" type="MeshInstance3D" parent="." unique_id=602632745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.07499999, 0)
+material_override = SubResource("ShaderMaterial_k0lrg")
+mesh = SubResource("CylinderMesh_fkybt")
+skeleton = NodePath("../..")
+
+[node name="HandleBottom" type="MeshInstance3D" parent="." unique_id=1382912402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14999998, 0)
+mesh = SubResource("CylinderMesh_x3wgy")
+skeleton = NodePath("../..")
+
+[node name="HandleTop" type="MeshInstance3D" parent="." unique_id=876992286]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.004999995, 0)
+mesh = SubResource("CylinderMesh_x3wgy")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="." unique_id=966300497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("CylinderShape3D_v0iea")
+
+[node name="Tip" type="Marker3D" parent="." unique_id=1143128297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="SliceSound" type="AudioStreamPlayer3D" parent="Tip" unique_id=1960394171]
+stream = ExtResource("4_k0lrg")
+volume_db = -16.0
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
