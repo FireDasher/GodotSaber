@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://x7qum5biqfme"]
+
+[ext_resource type="ArrayMesh" uid="uid://7sgh1h1gy2gu" path="res://mesh/bomb.obj" id="1_4kkau"]
+[ext_resource type="Script" uid="uid://dgtg5om12hyav" path="res://scripts/bomb.gd" id="1_vpdcx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vpdcx"]
+albedo_color = Color(0.1882353, 0.1882353, 0.1882353, 1)
+roughness = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_j15uc"]
+radius = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_4kkau"]
+material = SubResource("StandardMaterial3D_vpdcx")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Bomb" type="Area3D" unique_id=812437259]
+monitoring = false
+script = ExtResource("1_vpdcx")
+
+[node name="Sphere" type="MeshInstance3D" parent="." unique_id=1792548448]
+material_override = SubResource("StandardMaterial3D_vpdcx")
+mesh = ExtResource("1_4kkau")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="." unique_id=673700124]
+shape = SubResource("SphereShape3D_j15uc")
+
+[node name="ExplodeParticles" type="CPUParticles3D" parent="." unique_id=1549304294]
+emitting = false
+amount = 100
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("BoxMesh_4kkau")
+emission_shape = 1
+emission_sphere_radius = 0.2
+direction = Vector3(0, 1, 0)
+spread = 30.0
+initial_velocity_min = 4.0
+initial_velocity_max = 5.0
+scale_amount_min = 0.5
+
+[connection signal="finished" from="ExplodeParticles" to="." method="queue_free"]

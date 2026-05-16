@@ -1,43 +1,61 @@
 extends Node3D
 
 var preloaded_beat := preload("res://Scenes/beat.tscn")
+var preloaded_bomb := preload("res://Scenes/bomb.tscn")
 var CUBE_ROTATIONS := PackedFloat64Array([PI, 0.0, -TAU*0.25, TAU*0.25, -TAU*0.375, TAU*0.375, -TAU*0.125, TAU*0.125, 0.0])
 
 func _ready() -> void:
 	load_zip("songs/BeatSaber.zip", 3)
 
+enum NoteColor {LEFT, RIGHT, BOMB}
+
 class Note:
 	var beat: float
 	var line: int
 	var layer: int
-	var color: bool # false = Left, true = Right
+	var color: NoteColor
 	var direction: int
 	# Boilerplate
-	static func note(a: float, b: int, c: int, d: int, e: int) -> Note:var x := Note.new();x.beat = a;x.line = b;x.layer = c;x.color = d;x.direction = e;return x
+	static func note(a: float, b: int, c: int, d: NoteColor, e: int) -> Note: var x:=Note.new();x.beat=a;x.line=b;x.layer=c;x.color=d;x.direction=e;return x
+	static func bomb(a: float, b: int, c: int) -> Note: var x:=Note.new();x.beat=a;x.line=b;x.layer=c;x.color=NoteColor.BOMB;return x
+	func get_position() -> Vector3:
+		return Vector3(line *0.6-0.9, layer *0.6+0.8, beat * -4.0)
 
-func load_note_stack_v3(data: Array) -> Array[Note]:
+func load_note_stack_v3(data: Dictionary) -> Array[Note]:
 	var note_stack: Array[Note] = []
-	for note in data:
+	for note in data["colorNotes"]:
 		note_stack.append(Note.note(
 			note.get("b", 0.0), # beat
 			note.get("x", 0), # x position
 			note.get("y", 0), # y position
-			note.get("c", 0) == 1, # color
+			NoteColor.RIGHT if note.get("c", 0) == 1 else NoteColor.LEFT, # color
 			note.get("d", 0), # direction
+		))
+	for bomb in data["bombNotes"]:
+		note_stack.append(Note.bomb(
+			bomb.get("b", 0.0),
+			bomb.get("x", 0),
+			bomb.get("y", 0),
 		))
 	return note_stack
 
-func load_note_stack_v2(data: Array) -> Array[Note]:
+func load_note_stack_v2(data: Dictionary) -> Array[Note]:
 	var note_stack: Array[Note] = []
-	for note in data:
+	for note in data["_notes"]:
 		var type: int = note.get("_type", 0);
-		if type == 0 or type == 1:
+		if type == 0 or type == 1: # Note
 			note_stack.append(Note.note(
 				note.get("_time", 0.0), # time
 				note.get("_lineIndex", 0), # x position
 				note.get("_lineLayer", 0), # y position
-				type == 1, # color
+				NoteColor.RIGHT if type == 1 else NoteColor.LEFT, # color
 				note.get("_cutDirection", 0), # direction
+			))
+		elif type == 3: # Bomb
+			note_stack.append(Note.bomb(
+				note.get("_time", 0.0), # time
+				note.get("_lineIndex", 0), # x position
+				note.get("_lineLayer", 0), # y position
 			))
 	return note_stack
 
@@ -95,9 +113,9 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 	# load notes with support for different versions
 	var stack: Array[Note]
 	if beatmap.get("_version", "false").begins_with("2."):
-		stack = load_note_stack_v2(beatmap["_notes"])
+		stack = load_note_stack_v2(beatmap)
 	elif beatmap.get("version", "false").begins_with("3."):
-		stack = load_note_stack_v3(beatmap["colorNotes"])
+		stack = load_note_stack_v3(beatmap)
 	
 	# initiate materials
 	var left_color := Vector3(0.784, 0.078, 0.078)
@@ -117,15 +135,21 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 	
 	# instantiate notes
 	for note in stack:
-		var beat: Beat = preloaded_beat.instantiate()
-		beat.speed = speed
-		beat.position = Vector3(note.line *0.6-0.9, note.layer *0.6+0.8, note.beat * -4.0)
-		beat.rotation.z = CUBE_ROTATIONS[note.direction]
-		beat.cube = beat.get_node("Cube")
-		if note.color:
-			beat.cube.material_override = right_material
+		if note.color == NoteColor.BOMB:
+			var bomb: Bomb = preloaded_bomb.instantiate()
+			bomb.speed = speed
+			bomb.position = note.get_position()
+			add_child(bomb)
 		else:
-			beat.cube.material_override = left_material
-		if note.direction == 8:
-			beat.cube.set_instance_shader_parameter("is_dot", true)
-		add_child(beat)
+			var beat: Beat = preloaded_beat.instantiate()
+			beat.speed = speed
+			beat.position = note.get_position()
+			beat.rotation.z = CUBE_ROTATIONS[note.direction]
+			beat.cube = beat.get_node("Cube")
+			if note.color == NoteColor.RIGHT:
+				beat.cube.material_override = right_material
+			elif note.color == NoteColor.LEFT:
+				beat.cube.material_override = left_material
+			if note.direction == 8:
+				beat.cube.set_instance_shader_parameter("is_dot", true)
+			add_child(beat)

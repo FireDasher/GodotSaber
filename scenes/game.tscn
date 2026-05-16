@@ -43,6 +43,7 @@ transform = Transform3D(0.98480785, -0.15038377, 0.086824104, 0.08682412, 0.8594
 script = ExtResource("1_3dryh")
 
 [node name="XRSimulator" parent="." unique_id=360544672 instance=ExtResource("1_wrm1d")]
+enabled = false
 
 [node name="Player" parent="." unique_id=483345625 instance=ExtResource("1_qxrlw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)

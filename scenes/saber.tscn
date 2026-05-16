@@ -4,6 +4,7 @@
 [ext_resource type="Shader" uid="uid://ce7oqp0sd77se" path="res://shaders/saber.gdshader" id="2_u626u"]
 [ext_resource type="Shader" uid="uid://1tuj3vb73pnx" path="res://shaders/handle.gdshader" id="3_vjnfa"]
 [ext_resource type="AudioStream" uid="uid://bqnfsjv25q1qi" path="res://sounds/HitLong1.wav" id="4_k0lrg"]
+[ext_resource type="AudioStream" uid="uid://e4kya1h7s6qb" path="res://sounds/Explode.ogg" id="5_du0b2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cvnsp"]
 render_priority = 0
@@ -75,8 +76,10 @@ shape = SubResource("CylinderShape3D_v0iea")
 [node name="Tip" type="Marker3D" parent="." unique_id=1143128297]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
-[node name="SliceSound" type="AudioStreamPlayer3D" parent="Tip" unique_id=1960394171]
+[node name="SliceSound" type="AudioStreamPlayer" parent="." unique_id=2145428602]
 stream = ExtResource("4_k0lrg")
-volume_db = -16.0
+
+[node name="BombSound" type="AudioStreamPlayer" parent="." unique_id=769722331]
+stream = ExtResource("5_du0b2")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
