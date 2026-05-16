@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://daxvhrr205to" path="res://scripts/xr.gd" id="1_3dryh"]
 [ext_resource type="Script" uid="uid://dgs4o38nemcie" path="res://scripts/map_loader.gd" id="1_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://dvngtp3eloa3v" path="res://scenes/player.tscn" id="1_qxrlw"]
-[ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="1_wrm1d"]
 [ext_resource type="Texture2D" uid="uid://cg5wo1opnv0dw" path="res://textures/bg_base.png" id="2_iywne"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_p57ef"]
@@ -41,9 +40,6 @@ transform = Transform3D(0.98480785, -0.15038377, 0.086824104, 0.08682412, 0.8594
 
 [node name="StartXR" type="Node" parent="." unique_id=1035334317]
 script = ExtResource("1_3dryh")
-
-[node name="XRSimulator" parent="." unique_id=360544672 instance=ExtResource("1_wrm1d")]
-enabled = false
 
 [node name="Player" parent="." unique_id=483345625 instance=ExtResource("1_qxrlw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)

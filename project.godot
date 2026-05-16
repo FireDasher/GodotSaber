@@ -23,10 +23,6 @@ config/icon="res://icon.svg"
 
 window/size/mode=2
 
-[rendering]
-
-anti_aliasing/quality/screen_space_aa=1
-
 [xr]
 
 openxr/enabled=true

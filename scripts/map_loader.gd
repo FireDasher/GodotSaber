@@ -121,12 +121,8 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 	var left_color := Vector3(0.784, 0.078, 0.078)
 	var right_color := Vector3(0.188, 0.596, 1.000)
 	
-	var beat_shader: Shader = load("res://shaders/beat.gdshader")
 	var saber_shader: Shader = load("res://shaders/saber.gdshader")
 	var handle_shader: Shader = load("res://shaders/handle.gdshader")
-	
-	var left_material := make_colored_shader_material(beat_shader, left_color)
-	var right_material := make_colored_shader_material(beat_shader, right_color)
 	
 	$Player/LeftController/LeftSaber/Beam.material_override = make_colored_shader_material(saber_shader, left_color)
 	$Player/LeftController/LeftSaber/Handle.material_override = make_colored_shader_material(handle_shader, left_color)
@@ -147,9 +143,9 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 			beat.rotation.z = CUBE_ROTATIONS[note.direction]
 			beat.cube = beat.get_node("Cube")
 			if note.color == NoteColor.RIGHT:
-				beat.cube.material_override = right_material
+				beat.cube.set_instance_shader_parameter("color", right_color)
 			elif note.color == NoteColor.LEFT:
-				beat.cube.material_override = left_material
+				beat.cube.set_instance_shader_parameter("color", left_color)
 			if note.direction == 8:
 				beat.cube.set_instance_shader_parameter("is_dot", true)
 			add_child(beat)

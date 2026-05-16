@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" uid="uid://batrnxjgi5olq" path="res://scripts/beat.gd" id="1_28w56"]
 [ext_resource type="Shader" uid="uid://bok8gfijmk3ol" path="res://shaders/beat.gdshader" id="2_8tqnr"]
+[ext_resource type="CompressedCubemap" uid="uid://bhm7go7hhv4yt" path="res://textures/notesreflection.png" id="3_8tqnr"]
 [ext_resource type="ArrayMesh" uid="uid://tf6mgawxq53q" path="res://mesh/cube.obj" id="3_fpijs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wqlym"]
 render_priority = 0
 shader = ExtResource("2_8tqnr")
-shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/reflection = ExtResource("3_8tqnr")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wrm1d"]
 size = Vector3(0.5, 0.5, 0.5)
