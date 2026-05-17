@@ -10,5 +10,5 @@ func _process(delta: float) -> void:
 	velocity.y -= 9.81 * delta
 	animation += delta # fade away
 	set_instance_shader_parameter(&"cut_plane", Vector4(cut_plane.x, cut_plane.y, cut_plane.z, cut_plane.d + animation*animation))
-	if cut_plane.d > 1.0:
+	if animation > 1.0:
 		queue_free() # note has fully faded away
