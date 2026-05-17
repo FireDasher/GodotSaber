@@ -11,6 +11,8 @@ func slice(cut_plane: Plane) -> void:
 	var leftHalf = SlicedBeat.new()
 	leftHalf.mesh = cube.mesh
 	leftHalf.material_override = cube.material_override
+	leftHalf.set_instance_shader_parameter("color", cube.get_instance_shader_parameter("color"))
+	leftHalf.set_instance_shader_parameter("is_dot", cube.get_instance_shader_parameter("is_dot"))
 	leftHalf.cut_plane = -cut_plane
 	leftHalf.transform = transform
 	leftHalf.velocity = basis * cut_plane.normal * -2.0
@@ -18,6 +20,8 @@ func slice(cut_plane: Plane) -> void:
 	var rightHalf = SlicedBeat.new()
 	rightHalf.mesh = cube.mesh
 	rightHalf.material_override = cube.material_override
+	rightHalf.set_instance_shader_parameter("color", cube.get_instance_shader_parameter("color"))
+	rightHalf.set_instance_shader_parameter("is_dot", cube.get_instance_shader_parameter("is_dot"))
 	rightHalf.cut_plane = cut_plane
 	rightHalf.transform = transform
 	rightHalf.velocity = basis * cut_plane.normal * 2.0
