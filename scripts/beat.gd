@@ -32,5 +32,7 @@ func slice(cut_plane: Plane) -> void:
 	queue_free()
 	already_sliced = true
 
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	position.z += speed * delta
+	if position.z > 2.0:
+		queue_free()

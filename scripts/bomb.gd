@@ -9,5 +9,7 @@ func slice() -> void:
 	explode_particles.emitting = true
 	queue_free()
 
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	position.z += speed * delta
+	if position.z > 2.0:
+		queue_free()

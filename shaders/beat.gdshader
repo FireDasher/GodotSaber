@@ -22,7 +22,17 @@ void fragment() {
 		vec3 world_view = mat3(INV_VIEW_MATRIX) * VIEW;
 		vec3 world_normal = mat3(INV_VIEW_MATRIX) * NORMAL;
 		vec3 dir = reflect(-world_view, world_normal);
-		ALBEDO = texture(reflection, dir).rgb * color;
+		
+		// calculate blur based on a renderdoc decompilation
+		float dist=length(VERTEX);
+	    float ndotv=clamp(dot(normalize(NORMAL),normalize(VIEW)),0.0,1.0);
+	    float w3=clamp(2.0*(0.9-ndotv)+0.03*max(0.0,dist-5.0),0.0,1.0);
+	    float d=clamp(dist*0.01-0.3,0.0,1.0);
+	    float x=0.05+w3+d;
+	    float lod=max(6.0*x*(1.7-0.7*x),0.0);
+		
+		ALBEDO = textureLod(reflection, dir, lod).rgb * color;
 	}
+	
 	ALBEDO += vec3( smoothstep(0.05, 0.04, cuttedness) );
 }

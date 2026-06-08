@@ -1,11 +1,22 @@
 extends Node3D
 
+@onready var music: AudioStreamPlayer = $Music
 var preloaded_beat := preload("res://Scenes/beat.tscn")
 var preloaded_bomb := preload("res://Scenes/bomb.tscn")
 var CUBE_ROTATIONS := PackedFloat64Array([PI, 0.0, -TAU*0.25, TAU*0.25, -TAU*0.375, TAU*0.375, -TAU*0.125, TAU*0.125, 0.0])
 
+var bpm: float
+var stb: float # Seconds To Beats
+var bts: float # Beats To Seconds
+var note_stack: Array[Note] = []
+var left_color := Vector3(0.784, 0.078, 0.078)
+var right_color := Vector3(0.188, 0.596, 1.000)
+
+var note_jump_movement_speed: float
+var half_jump_duration: float
+
 func _ready() -> void:
-	load_zip("songs/BeatSaber.zip", 3)
+	load_zip("ost/finalbosschan.zip", 4)
 
 enum NoteColor {LEFT, RIGHT, BOMB}
 
@@ -18,11 +29,8 @@ class Note:
 	# Boilerplate
 	static func note(a: float, b: int, c: int, d: NoteColor, e: int) -> Note: var x:=Note.new();x.beat=a;x.line=b;x.layer=c;x.color=d;x.direction=e;return x
 	static func bomb(a: float, b: int, c: int) -> Note: var x:=Note.new();x.beat=a;x.line=b;x.layer=c;x.color=NoteColor.BOMB;return x
-	func get_position() -> Vector3:
-		return Vector3(line *0.6-0.9, layer *0.6+0.8, beat * -4.0)
 
-func load_note_stack_v3(data: Dictionary) -> Array[Note]:
-	var note_stack: Array[Note] = []
+func load_note_stack_v3(data: Dictionary) -> void:
 	for note in data["colorNotes"]:
 		note_stack.append(Note.note(
 			note.get("b", 0.0), # beat
@@ -37,10 +45,8 @@ func load_note_stack_v3(data: Dictionary) -> Array[Note]:
 			bomb.get("x", 0),
 			bomb.get("y", 0),
 		))
-	return note_stack
 
-func load_note_stack_v2(data: Dictionary) -> Array[Note]:
-	var note_stack: Array[Note] = []
+func load_note_stack_v2(data: Dictionary) -> void:
 	for note in data["_notes"]:
 		var type: int = note.get("_type", 0);
 		if type == 0 or type == 1: # Note
@@ -57,7 +63,6 @@ func load_note_stack_v2(data: Dictionary) -> Array[Note]:
 				note.get("_lineIndex", 0), # x position
 				note.get("_lineLayer", 0), # y position
 			))
-	return note_stack
 
 func get_audio_stream_from_buffer(bytes: PackedByteArray) -> AudioStream:
 	if bytes.size() < 4:
@@ -100,26 +105,39 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 	
 	# load song
 	var song_bytes := zip.read_file(info["_songFilename"])
-	$Music.stream = get_audio_stream_from_buffer(song_bytes)
-	$Music.play()
-	
-	# speed in m/s
-	var speed: float = info["_beatsPerMinute"] * 0.016666666666666667 * 4.0
+	music.stream = get_audio_stream_from_buffer(song_bytes)
+	music.play()
 	
 	# get beetmap
 	var beatmap_info: Dictionary = info["_difficultyBeatmapSets"][0]["_difficultyBeatmaps"][difficulty]
 	var beatmap: Dictionary = JSON.parse_string(zip.read_file(beatmap_info["_beatmapFilename"]).get_string_from_utf8())
+	
+	# converts seconds to beats
+	bpm = info["_beatsPerMinute"]
+	stb = bpm / 60.0
+	bts = 60.0 / bpm
+	note_jump_movement_speed = beatmap_info.get("_noteJumpMovementSpeed", 10.0)
+	var njsb_offset: float = beatmap_info.get("_noteJumpStartBeatOffset", 0.5)
+	
+	# weird half-jump-duration calculation
+	var jt := 4.0
+	while note_jump_movement_speed * bts * jt > 18.0: jt /= 2.0
+	jt += njsb_offset
+	if jt < 0.25: jt = 0.25
+	
+	half_jump_duration = jt
 
 	# load notes with support for different versions
-	var stack: Array[Note]
 	if beatmap.get("_version", "false").begins_with("2."):
-		stack = load_note_stack_v2(beatmap)
+		load_note_stack_v2(beatmap)
 	elif beatmap.get("version", "false").begins_with("3."):
-		stack = load_note_stack_v3(beatmap)
+		load_note_stack_v3(beatmap)
+	
+	note_stack.sort_custom(func (a: Note, b: Note) -> bool: return a.beat > b.beat) # Ensures correct order
 	
 	# initiate materials
-	var left_color := Vector3(0.784, 0.078, 0.078)
-	var right_color := Vector3(0.188, 0.596, 1.000)
+	left_color = Vector3(0.784, 0.078, 0.078)
+	right_color = Vector3(0.188, 0.596, 1.000)
 	
 	var saber_shader: Shader = load("res://shaders/saber.gdshader")
 	var handle_shader: Shader = load("res://shaders/handle.gdshader")
@@ -128,18 +146,18 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 	$Player/LeftController/LeftSaber/Handle.material_override = make_colored_shader_material(handle_shader, left_color)
 	$Player/RightController/RightSaber/Beam.material_override = make_colored_shader_material(saber_shader, right_color)
 	$Player/RightController/RightSaber/Handle.material_override = make_colored_shader_material(handle_shader, right_color)
-	
-	# instantiate notes
-	for note in stack:
+
+func _physics_process(_delta: float) -> void:
+	if not music.playing: return
+	var cbeat := music.get_playback_position() * stb
+	var tbeat := cbeat + half_jump_duration
+	while not note_stack.is_empty() and note_stack[-1].beat <= tbeat:
+		var note: Note = note_stack.pop_back()
+		var beat: Node3D
 		if note.color == NoteColor.BOMB:
-			var bomb: Bomb = preloaded_bomb.instantiate()
-			bomb.speed = speed
-			bomb.position = note.get_position()
-			add_child(bomb)
+			beat = preloaded_bomb.instantiate()
 		else:
-			var beat: Beat = preloaded_beat.instantiate()
-			beat.speed = speed
-			beat.position = note.get_position()
+			beat = preloaded_beat.instantiate()
 			beat.rotation.z = CUBE_ROTATIONS[note.direction]
 			beat.cube = beat.get_node("Cube")
 			if note.color == NoteColor.RIGHT:
@@ -148,4 +166,11 @@ func load_zip(zip_path: String, difficulty: int) -> void:
 				beat.cube.set_instance_shader_parameter("color", left_color)
 			if note.direction == 8:
 				beat.cube.set_instance_shader_parameter("is_dot", true)
-			add_child(beat)
+		
+		# commom
+		beat.speed = note_jump_movement_speed
+		beat.position = Vector3(note.line *0.6-0.9, note.layer *0.6+0.8, (cbeat - note.beat) * (note_jump_movement_speed * bts))
+		var anim: AnimationPlayer = beat.get_node("AnimationPlayer")
+		anim.speed_scale = stb*0.5
+		anim.current_animation = &"spawn"
+		add_child(beat)

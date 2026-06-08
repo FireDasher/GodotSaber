@@ -14,7 +14,7 @@ shader_parameter/color = Color(1, 0.1882353, 0.1882353, 1)
 [sub_resource type="CylinderMesh" id="CylinderMesh_6t5aa"]
 top_radius = 0.015
 bottom_radius = 0.015
-height = 1.2
+height = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k0lrg"]
 render_priority = 0
@@ -39,16 +39,15 @@ top_radius = 0.016
 bottom_radius = 0.016
 height = 0.01
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_v0iea"]
-height = 1.2
-radius = 0.015
-
-[node name="Saber" type="Area3D" unique_id=1210729579]
-monitorable = false
+[node name="Saber" type="RayCast3D" unique_id=408638769]
+exclude_parent = false
+target_position = Vector3(0, 1, 0)
+collide_with_areas = true
+collide_with_bodies = false
 script = ExtResource("1_4ji7x")
 
 [node name="Beam" type="MeshInstance3D" parent="." unique_id=1957680352]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 material_override = SubResource("ShaderMaterial_cvnsp")
 mesh = SubResource("CylinderMesh_6t5aa")
 skeleton = NodePath("../..")
@@ -69,17 +68,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.004999995, 0)
 mesh = SubResource("CylinderMesh_x3wgy")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape" type="CollisionShape3D" parent="." unique_id=966300497]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
-shape = SubResource("CylinderShape3D_v0iea")
-
 [node name="Tip" type="Marker3D" parent="." unique_id=1143128297]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="SliceSound" type="AudioStreamPlayer" parent="." unique_id=2145428602]
 stream = ExtResource("4_k0lrg")
+volume_db = -5.0
 
 [node name="BombSound" type="AudioStreamPlayer" parent="." unique_id=769722331]
 stream = ExtResource("5_du0b2")
-
-[connection signal="area_entered" from="." to="." method="_on_area_entered"]
