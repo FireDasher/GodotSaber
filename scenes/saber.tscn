@@ -7,9 +7,10 @@
 [ext_resource type="AudioStream" uid="uid://e4kya1h7s6qb" path="res://sounds/Explode.ogg" id="5_du0b2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cvnsp"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_u626u")
-shader_parameter/color = Color(1, 0.1882353, 0.1882353, 1)
+shader_parameter/color = Color(0.78431374, 0.078431375, 0.078431375, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_6t5aa"]
 top_radius = 0.015
@@ -17,9 +18,10 @@ bottom_radius = 0.015
 height = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k0lrg"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_vjnfa")
-shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/color = Color(0.78431374, 0.078431375, 0.078431375, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_fkybt"]
 resource_local_to_scene = true
@@ -44,6 +46,7 @@ exclude_parent = false
 target_position = Vector3(0, 1, 0)
 collide_with_areas = true
 collide_with_bodies = false
+debug_shape_custom_color = Color(0, 0, 0, 0)
 script = ExtResource("1_4ji7x")
 
 [node name="Beam" type="MeshInstance3D" parent="." unique_id=1957680352]

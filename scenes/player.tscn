@@ -1,6 +1,44 @@
 [gd_scene format=3 uid="uid://dvngtp3eloa3v"]
 
 [ext_resource type="PackedScene" uid="uid://bj4iuyxjr3mep" path="res://scenes/saber.tscn" id="1_cvnsp"]
+[ext_resource type="Shader" uid="uid://ce7oqp0sd77se" path="res://shaders/saber.gdshader" id="2_qhqgy"]
+[ext_resource type="Shader" uid="uid://1tuj3vb73pnx" path="res://shaders/handle.gdshader" id="3_dqkch"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qhqgy"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_qhqgy")
+shader_parameter/color = Color(1, 0.1882353, 0.1882353, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dqkch"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_dqkch")
+shader_parameter/color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qlg0r"]
+resource_local_to_scene = true
+top_radius = 0.015
+bottom_radius = 0.015
+height = 0.15
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tuyoq"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_qhqgy")
+shader_parameter/color = Color(0.1882353, 0.59607846, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fjrip"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_dqkch")
+shader_parameter/color = Color(0.1882353, 0.59607846, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_smehm"]
+resource_local_to_scene = true
+top_radius = 0.015
+bottom_radius = 0.015
+height = 0.15
 
 [node name="Player" type="XROrigin3D" unique_id=1401070103]
 
@@ -14,6 +52,13 @@ tracker = &"left_hand"
 [node name="LeftSaber" parent="LeftController" unique_id=1210729579 instance=ExtResource("1_cvnsp")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
+[node name="Beam" parent="LeftController/LeftSaber" index="0" unique_id=1957680352]
+material_override = SubResource("ShaderMaterial_qhqgy")
+
+[node name="Handle" parent="LeftController/LeftSaber" index="1" unique_id=602632745]
+material_override = SubResource("ShaderMaterial_dqkch")
+mesh = SubResource("CylinderMesh_qlg0r")
+
 [node name="RightController" type="XRController3D" parent="." unique_id=1547569878]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
 tracker = &"right_hand"
@@ -21,4 +66,14 @@ tracker = &"right_hand"
 [node name="RightSaber" parent="RightController" unique_id=614618357 instance=ExtResource("1_cvnsp")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
+[node name="Beam" parent="RightController/RightSaber" index="0" unique_id=1957680352]
+material_override = SubResource("ShaderMaterial_tuyoq")
+
+[node name="Handle" parent="RightController/RightSaber" index="1" unique_id=602632745]
+material_override = SubResource("ShaderMaterial_fjrip")
+mesh = SubResource("CylinderMesh_smehm")
+
 [connection signal="button_pressed" from="RightController" to="RightController/RightSaber" method="_on_right_controller_button_pressed"]
+
+[editable path="LeftController/LeftSaber"]
+[editable path="RightController/RightSaber"]

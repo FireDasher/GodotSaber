@@ -14,7 +14,7 @@ func _physics_process(_delta: float) -> void:
 		var area := get_collider()
 		if area is Beat:
 			var cut_plane := Plane(global_position, saber_tip, past_saber_tip).normalized() # global plane
-			var local_cut_plane := Plane(area.cube.global_basis.inverse() * cut_plane.normal, area.cube.to_local(cut_plane.normal * cut_plane.d)) # convert to local space
+			var local_cut_plane := Plane(area.mesh.global_basis.inverse() * cut_plane.normal, area.mesh.to_local(cut_plane.normal * cut_plane.d)) # convert to local space
 			
 			area.slice(Plane.PLANE_YZ if saber_tip == past_saber_tip else local_cut_plane)
 			sound.play()
