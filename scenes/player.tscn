@@ -51,6 +51,7 @@ tracker = &"left_hand"
 
 [node name="LeftSaber" parent="LeftController" unique_id=1210729579 instance=ExtResource("1_cvnsp")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+collision_mask = 2
 
 [node name="Beam" parent="LeftController/LeftSaber" index="0" unique_id=1957680352]
 material_override = SubResource("ShaderMaterial_qhqgy")
@@ -65,6 +66,7 @@ tracker = &"right_hand"
 
 [node name="RightSaber" parent="RightController" unique_id=614618357 instance=ExtResource("1_cvnsp")]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+collision_mask = 4
 
 [node name="Beam" parent="RightController/RightSaber" index="0" unique_id=1957680352]
 material_override = SubResource("ShaderMaterial_tuyoq")

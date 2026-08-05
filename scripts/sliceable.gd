@@ -1,5 +1,5 @@
-class_name Movement
-extends Area3D
+class_name Sliceable
+extends Node3D
 
 var mesh: MeshInstance3D
 var already_sliced := false
@@ -7,6 +7,7 @@ var note: Note
 
 func _ready() -> void:
 	position = Vector3(note.line *0.6-0.9, note.layer *0.6+0.8, Map.hjp + Map.BEAT_WARMUP_POSITION - Map.SWORD_OFFSET)
+	rotation.z = Map.CUBE_ROTATIONS[note.direction]
 
 func _process(_delta: float) -> void:
 	var offset := Map.time - note.time + Map.hjd

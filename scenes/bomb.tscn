@@ -7,9 +7,6 @@
 albedo_color = Color(0.1882353, 0.1882353, 0.1882353, 1)
 roughness = 0.5
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_j15uc"]
-radius = 0.2
-
 [sub_resource type="BoxMesh" id="BoxMesh_4kkau"]
 material = SubResource("StandardMaterial3D_vpdcx")
 size = Vector3(0.1, 0.1, 0.1)
@@ -100,16 +97,15 @@ _data = {
 &"spawn": SubResource("Animation_vpdcx")
 }
 
-[node name="Bomb" type="Area3D" unique_id=812437259]
-monitoring = false
+[sub_resource type="SphereShape3D" id="SphereShape3D_j15uc"]
+radius = 0.2
+
+[node name="Bomb" type="Node3D" unique_id=618394117]
 script = ExtResource("1_vpdcx")
 
 [node name="Sphere" type="MeshInstance3D" parent="." unique_id=1792548448]
 material_override = SubResource("StandardMaterial3D_vpdcx")
 mesh = ExtResource("1_4kkau")
-
-[node name="CollisionShape" type="CollisionShape3D" parent="." unique_id=673700124]
-shape = SubResource("SphereShape3D_j15uc")
 
 [node name="ExplodeParticles" type="CPUParticles3D" parent="." unique_id=1549304294]
 emitting = false
@@ -129,5 +125,13 @@ scale_amount_min = 0.5
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=646055080]
 root_node = NodePath("../Sphere")
 libraries/ = SubResource("AnimationLibrary_j15uc")
+
+[node name="Hitbox" type="Area3D" parent="." unique_id=901841754]
+collision_layer = 6
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Hitbox" unique_id=673700124]
+shape = SubResource("SphereShape3D_j15uc")
 
 [connection signal="finished" from="ExplodeParticles" to="." method="queue_free"]

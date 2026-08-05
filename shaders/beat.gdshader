@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled;
 
-uniform samplerCube reflection: source_color;
+uniform samplerCube reflection: source_color, filter_linear_mipmap;
 instance uniform vec3 color : source_color = vec3(1.0, 0.0, 0.0);
 instance uniform bool is_dot = false;
 instance uniform vec4 cut_plane = vec4(0.0, 1.0, 0.0, -1.0);
@@ -23,13 +23,11 @@ void fragment() {
 		vec3 world_normal = mat3(INV_VIEW_MATRIX) * NORMAL;
 		vec3 dir = reflect(-world_view, world_normal);
 		
-		// calculate blur based on a renderdoc decompilation
-		float dist=length(VERTEX);
-	    float ndotv=clamp(dot(normalize(NORMAL),normalize(VIEW)),0.0,1.0);
-	    float w3=clamp(2.0*(0.9-ndotv)+0.03*max(0.0,dist-5.0),0.0,1.0);
-	    float d=clamp(dist*0.01-0.3,0.0,1.0);
-	    float x=0.05+w3+d;
-	    float lod=max(6.0*x*(1.7-0.7*x),0.0);
+		// Blur code based on a renderdoc decompilation
+		float dist = length(VERTEX); // aka w2.x
+		float fresnel = (0.9 - dot(world_normal, world_view)) * 2.0 + max(0.0, dist - 5.0) * 0.03; // aka w3.x
+		float lod = 1.0 + (-0.95 + fresnel) + clamp(dist * 0.01 - 0.3, 0.0, 1.0);
+		lod = lod * (-lod * 0.7 + 1.7) * 6.0;
 		
 		ALBEDO = textureLod(reflection, dir, lod).rgb * color;
 	}

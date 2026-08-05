@@ -1,5 +1,5 @@
 class_name Beat
-extends Movement
+extends Sliceable
 
 func slice(cut_plane: Plane) -> void:
 	if already_sliced: return
@@ -22,8 +22,15 @@ func slice(cut_plane: Plane) -> void:
 	rightHalf.transform = transform
 	rightHalf.velocity = basis * cut_plane.normal * 2.0
 	
-	add_sibling(leftHalf)
-	add_sibling(rightHalf)
+	get_parent().add_child(leftHalf)
+	get_parent().add_child(rightHalf)
 	
-	queue_free()
 	already_sliced = true
+	queue_free()
+
+func _ready() -> void:
+	super()
+	# if left then left saber collides with good hitbox and right saber collides with bad hitbox
+	# if right then right saber collides with good hitbox and left saber collides with bad hitbox
+	$GoodHitbox.collision_layer = 2 if note.color == Note.Type.LEFT else 4
+	$BadHitbox. collision_layer = 4 if note.color == Note.Type.LEFT else 2

@@ -11,10 +11,12 @@ shader = ExtResource("2_8tqnr")
 shader_parameter/reflection = ExtResource("3_8tqnr")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wrm1d"]
+size = Vector3(0.8, 0.5, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8tqnr"]
 size = Vector3(0.5, 0.5, 0.5)
 
-[node name="Beat" type="Area3D" unique_id=1891962924]
-monitoring = false
+[node name="Beat" type="Node3D" unique_id=2107602828]
 script = ExtResource("1_28w56")
 
 [node name="Cube" type="MeshInstance3D" parent="." unique_id=1653137057]
@@ -22,5 +24,19 @@ material_override = SubResource("ShaderMaterial_wqlym")
 mesh = ExtResource("3_fpijs")
 skeleton = NodePath("")
 
-[node name="CollisionShape" type="CollisionShape3D" parent="." unique_id=2030568929]
+[node name="GoodHitbox" type="Area3D" parent="." unique_id=65987760]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape" type="CollisionShape3D" parent="GoodHitbox" unique_id=2030568929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
 shape = SubResource("BoxShape3D_wrm1d")
+
+[node name="BadHitbox" type="Area3D" parent="." unique_id=1799102288]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape" type="CollisionShape3D" parent="BadHitbox" unique_id=754963920]
+shape = SubResource("BoxShape3D_8tqnr")

@@ -4,6 +4,7 @@ const BEAT_WARMUP_SPEED: float = 200.0
 const BEAT_WARMUP_TIME: float = 0.3
 const BEAT_WARMUP_POSITION: float = -BEAT_WARMUP_SPEED * BEAT_WARMUP_TIME
 const SWORD_OFFSET: float = 0.9
+var CUBE_ROTATIONS := PackedFloat64Array([PI, 0.0, -TAU*0.25, TAU*0.25, -TAU*0.375, TAU*0.375, -TAU*0.125, TAU*0.125, 0.0]) # you can't have const packed arrays for some reason
 
 var bpm: float
 
