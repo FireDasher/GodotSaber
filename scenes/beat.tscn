@@ -4,6 +4,7 @@
 [ext_resource type="Shader" uid="uid://bok8gfijmk3ol" path="res://shaders/beat.gdshader" id="2_8tqnr"]
 [ext_resource type="CompressedCubemap" uid="uid://bhm7go7hhv4yt" path="res://textures/notesreflection.png" id="3_8tqnr"]
 [ext_resource type="ArrayMesh" uid="uid://tf6mgawxq53q" path="res://mesh/cube.obj" id="3_fpijs"]
+[ext_resource type="AudioStream" uid="uid://c1rosk361qo43" path="res://sounds/hit.wav" id="5_wqlym"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wqlym"]
 render_priority = 0
@@ -28,6 +29,7 @@ skeleton = NodePath("")
 collision_layer = 0
 collision_mask = 0
 monitoring = false
+monitorable = false
 
 [node name="CollisionShape" type="CollisionShape3D" parent="GoodHitbox" unique_id=2030568929]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
@@ -37,6 +39,13 @@ shape = SubResource("BoxShape3D_wrm1d")
 collision_layer = 0
 collision_mask = 0
 monitoring = false
+monitorable = false
 
 [node name="CollisionShape" type="CollisionShape3D" parent="BadHitbox" unique_id=754963920]
 shape = SubResource("BoxShape3D_8tqnr")
+
+[node name="Slice" type="AudioStreamPlayer3D" parent="." unique_id=316708674]
+stream = ExtResource("5_wqlym")
+attenuation_model = 1
+unit_size = 1.0
+attenuation_filter_cutoff_hz = 20000.0

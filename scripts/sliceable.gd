@@ -9,6 +9,10 @@ func _ready() -> void:
 	position = Vector3(note.line *0.6-0.9, note.layer *0.6+0.8, Map.hjp + Map.BEAT_WARMUP_POSITION - Map.SWORD_OFFSET)
 	rotation.z = Map.CUBE_ROTATIONS[note.direction]
 
+# virtual function
+func slice(_cut_plane: Plane, _controller: XRController3D) -> void:
+	pass
+
 func _process(_delta: float) -> void:
 	var offset := Map.time - note.time + Map.hjd
 	var t := offset / (Map.hjd * 2.0)
@@ -18,3 +22,5 @@ func _process(_delta: float) -> void:
 		position.z = lerp(Map.hjp - Map.SWORD_OFFSET + head_offset * minf(1.0, t*2.0), -Map.hjp - Map.SWORD_OFFSET + head_offset, t)
 	else:
 		position.z = Map.hjp + Map.BEAT_WARMUP_POSITION + Map.BEAT_WARMUP_SPEED * -toff - Map.SWORD_OFFSET
+	if Map.autoplay and t > 0.5:
+		slice(Plane.PLANE_YZ, null)

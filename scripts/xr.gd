@@ -70,6 +70,8 @@ func _ready():
 		enabled = false
 		return
 	
+	Map.autoplay = true # auto autoplay on PC for now, in the future instead of emulating VR it should be a proper viewer with flycam controls and no sabers when on PC
+	
 	if not enabled:
 		enabled = false
 		return

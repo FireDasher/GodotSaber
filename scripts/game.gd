@@ -8,7 +8,12 @@ var index := 0
 func _ready() -> void:
 	Map.camera = $Player/Camera
 	Map.load_zip("ost/DarkSide.zip", 2)
+	reload()
+
+func reload():
 	music.stream = Map.music_stream
+	Map.time = 0.0
+	index = 0
 	music.play()
 
 #func make_colored_shader_material(shader: Shader, color: Vector3) -> ShaderMaterial:
@@ -16,6 +21,8 @@ func _ready() -> void:
 	#material.shader = shader
 	#material.set_shader_parameter("color", color)
 	#return material
+
+var lastnote: Note
 
 func _process(_delta: float) -> void:
 	if not music.playing: return
@@ -34,6 +41,11 @@ func _process(_delta: float) -> void:
 				beat.mesh.set_instance_shader_parameter("color", Map.left_color)
 			if note.direction == 8:
 				beat.mesh.set_instance_shader_parameter("is_dot", true)
+		
+		if lastnote and note.time == lastnote.time and note.line == lastnote.line and note.layer == lastnote.layer:
+			print("detected dupe")
+		
+		lastnote = note
 		
 		# commom
 		beat.note = note

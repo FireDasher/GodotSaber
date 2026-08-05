@@ -20,6 +20,9 @@ var hjd: float
 ## Half Jump Position
 var hjp: float
 
+#-- Config --#
+var autoplay: bool = false
+
 #-- Runtime Data --#
 
 var time: float

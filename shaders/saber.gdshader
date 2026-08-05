@@ -6,5 +6,5 @@ render_mode unshaded, blend_add, cull_disabled;
 void fragment() {
 	float v = float(pow(1.0 - dot(NORMAL, VIEW), 2.0)>0.1);
 	
-	ALBEDO = color*0.1 + v;
+	ALBEDO = color*0.1 + v*2.0;
 }

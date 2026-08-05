@@ -1,9 +1,7 @@
 class_name Beat
 extends Sliceable
 
-func slice(cut_plane: Plane) -> void:
-	if already_sliced: return
-	
+func slice(cut_plane: Plane, controller: XRController3D) -> void:
 	var leftHalf = SlicedBeat.new()
 	leftHalf.mesh = mesh.mesh
 	leftHalf.material_override = mesh.material_override
@@ -25,7 +23,13 @@ func slice(cut_plane: Plane) -> void:
 	get_parent().add_child(leftHalf)
 	get_parent().add_child(rightHalf)
 	
-	already_sliced = true
+	var slice_sound: AudioStreamPlayer3D = $Slice
+	slice_sound.reparent(get_parent())
+	slice_sound.play()
+	if controller:
+		controller.trigger_haptic_pulse("haptic", 20.0, 0.75, 0.05, 0.0)
+	
+	visible = false
 	queue_free()
 
 func _ready() -> void:
@@ -33,4 +37,4 @@ func _ready() -> void:
 	# if left then left saber collides with good hitbox and right saber collides with bad hitbox
 	# if right then right saber collides with good hitbox and left saber collides with bad hitbox
 	$GoodHitbox.collision_layer = 2 if note.color == Note.Type.LEFT else 4
-	$BadHitbox. collision_layer = 4 if note.color == Note.Type.LEFT else 2
+	$BadHitbox.collision_layer = 4 if note.color == Note.Type.LEFT else 2
